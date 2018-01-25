@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>IGMRC后台管理中心登陆</title>
+  <script src="../layer/layer.js"></script>
+
+  <!-- Bootstrap Core CSS -->
+  <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- MetisMenu CSS -->
+  <link href="../vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+
+  <!-- Custom CSS -->
+  <link href="../dist/css/sb-admin-2.css" rel="stylesheet">
+
+  <!-- Custom Fonts -->
+  <link href="../vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+</head>
+
+<body>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-4 col-md-offset-4">
+      <div class="login-panel panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">IGMRC管理登陆</h3>
+        </div>
+        <div class="panel-body">
+          <%= form_tag('/admin/login', method: 'post') do |f| %>
+              <fieldset>
+                <div class="form-group">
+                  <input class="form-control" placeholder="用户名" name="form-username" type="text" autofocus>
+                </div>
+                <div class="form-group">
+                  <input class="form-control" placeholder="密码" name="form-password" type="password" value="">
+                </div>
+
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col-md-8">
+                      <input class="form-control" placeholder="短信验证码" name="form-sms" id="form-sms" type="text"
+                             value="">
+                    </div>
+                    <div class="col-md-4">
+                      <button type="button" class="btn  btn-success btn-block" id="form-sms-button">发送验证码</button>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="checkbox">
+                  <label>
+                    <input name="form-remember" type="checkbox" value="Remember Me">记住我
+                  </label>
+                </div>
+                <div class="alert alert-danger <%= @error_class %>" role="alert">
+                  <strong>登陆失败!</strong> <%= @error_msg %>
+                </div>
+                <!-- Change this to a button or input when using this as a form -->
+                <button type="submit" class="btn btn-lg btn-success btn-block">登陆</button>
+              </fieldset>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function () {
+    var step = 59;
+    var sms = document.getElementById("form-sms-button");
+    sms.onclick = function(){
+      $.ajax({
+        url: '/func/sms_send_admin',
+        method: 'POST',
+        data: "",
+        processData: false,
+        contentType: 'application/x-www-form-urlencoded',
+        headers: {
+          'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(result) {
+          if(result == 'true'){
+            $(sms).text('重新发送60');
+            var _res = setInterval(function()
+            {
+              $(sms).attr("disabled", true);//设置disabled属性
+              $(sms).text('重新发送'+step);
+              step-=1;
+              if(step <= 0){
+                $(sms).removeAttr("disabled"); //移除disabled属性
+                $(sms).text('获取验证码');
+                clearInterval(_res);//清除setInterval
+              }
+            },1000);
+          }
+        }
+      });
+    }
+  })
+</script>
+
+<!-- jQuery -->
+<script src="../vendor/jquery/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
+
+<!-- Metis Menu Plugin JavaScript -->
+<script src="../vendor/metisMenu/metisMenu.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="../dist/js/sb-admin-2.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,75 @@
+<body>
+
+<%= render :partial => 'layouts/notice' %>
+
+<header class="site-header jumbotron">
+
+  <%= render :partial => 'layouts/sitenav' %>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12"><h1>IGMRC</h1>
+        <p>互联网反赌反传舆情举报中心<br><span class="package-amount">共收录了 <strong><%= get_sites_count %></strong> 个危险网站</span></p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <h3>IGMRC简介</h3>
+  <div class="package-version">
+    <div class="row">
+      <div class="col-md-11 col-md-offset-1 col-sm-12">
+        <ul class="list-group">
+          <li class="list-group-item library">
+            <p>  WooYun是一个位于厂商和安全研究者之间的安全问题反馈平台，在对安全问题进行反馈处理跟进的同时，为互联网安全研究者提供一个公益、学习、交流和研究的平台。其名字来源于目前互联网上的“云”，在这个不做“云”不好意思和人家打招呼的时代，网络安全相关的，无论是技术还是思路都会有点黑色的感觉，所以自然出现了乌云。
+
+              你可以叫他乌云，或者巫云，或者我晕，但是我们坚信它是汇聚互联网安全研究者力量的，将带来暴风雨清洗一切的乌云。</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <h3>IGMRC数据统计</h3>
+  <div class="package-version">
+    <div class="row">
+      <div class="col-md-11 col-md-offset-1 col-sm-12">
+        <ul class="list-group">
+          <li class="list-group-item library">
+            <p>  WooYun是一个位于厂商和安全研究者之间的安全问题反馈平台，在对安全问题进行反馈处理跟进的同时，为互联网安全研究者提供一个公益、学习、交流和研究的平台。其名字来源于目前互联网上的“云”，在这个不做“云”不好意思和人家打招呼的时代，网络安全相关的，无论是技术还是思路都会有点黑色的感觉，所以自然出现了乌云。
+
+              你可以叫他乌云，或者巫云，或者我晕，但是我们坚信它是汇聚互联网安全研究者力量的，将带来暴风雨清洗一切的乌云。</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <h3>IGMRC联系方式</h3>
+  <div class="package-version">
+    <div class="row">
+      <div class="col-md-11 col-md-offset-1 col-sm-12">
+        <ul class="list-group">
+          <li class="list-group-item library">
+            <p>  WooYun是一个位于厂商和安全研究者之间的安全问题反馈平台，在对安全问题进行反馈处理跟进的同时，为互联网安全研究者提供一个公益、学习、交流和研究的平台。其名字来源于目前互联网上的“云”，在这个不做“云”不好意思和人家打招呼的时代，网络安全相关的，无论是技术还是思路都会有点黑色的感觉，所以自然出现了乌云。
+
+              你可以叫他乌云，或者巫云，或者我晕，但是我们坚信它是汇聚互联网安全研究者力量的，将带来暴风雨清洗一切的乌云。</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</main>
+<footer id="footer" class="footer hidden-print" style="background-color: white;padding-top: 20px;">
+  <div class="mostused-packages text-center hidden-xs hidden-sm" style="background-color: white;border:none;">
+
+    <%= render :partial => 'layouts/contact' %>
+
+  </div>
+
+  <%= render :partial => 'layouts/copyright' %>
+
+</footer>
+</body>

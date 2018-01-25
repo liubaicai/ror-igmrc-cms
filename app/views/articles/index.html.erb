@@ -1,0 +1,99 @@
+<body style="background-color: #f4f4f4;">
+
+<%= render :partial => 'layouts/notice' %>
+
+<header class="site-header jumbotron">
+
+  <%= render :partial => 'layouts/sitenav' %>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12"><h1><%= @title %></h1>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="content-wrap" style="margin-top: 20px;">
+  <div class="container">
+    <div class="row">
+      <main class="col-md-9 main-content">
+
+        <% @articles.each do |article| %>
+            <article class="post tag-https">
+              <div class="post-head">
+                <h1 class="post-title"><%=link_to article.title, '/article/'+article.alias_url+'.html' %></h1>
+                <div class="post-meta">
+                  <span class="author">作者：<a href="#"><% unless article.user.nil? %><%= article.user.nickname %><% end %></a></span> •
+                  <time class="post-date"><%= time_tostring(article.created_at.localtime) %></time>
+                </div>
+              </div>
+              <div class="post-content">
+                <p><%= strip_tags(article.content)[0..240] %>...</p>
+              </div>
+              <div class="post-permalink">
+                <%=link_to '阅读全文', '/article/'+article.alias_url+'.html', class: 'btn btn-default' %>
+              </div>
+
+              <footer class="post-footer clearfix">
+                <div class="pull-left tag-list">
+                  <i class="fa fa-folder-open-o"></i>
+                  <a href="#"><%= article.article_type.title %></a>
+                </div>
+                <div class="pull-right share">
+                </div>
+              </footer>
+            </article>
+        <% end %>
+
+        <div class="row pagination" style="margin-top: 20px;">
+          <%=will_paginate @articles , renderer: BootstrapPagination::Rails, previous_label:'«' , next_label:'»' %>
+        </div>
+      </main>
+
+      <div class="col-md-3">
+        <div class="list-group packages">
+          <a class="package list-group-item" style="background-color: white;">
+            <div class="row">
+              <div class="col-md-12">
+                <h4 class="package-name"><i class="fa fa-circle"></i><span style="margin-left: 6px;">最新风险网站</span>
+                </h4>
+              </div>
+
+            </div>
+          </a>
+
+          <% get_new_sites.each do |site| %>
+
+              <a class="package list-group-item" href="/site/<%= site.alias_url %>.html">
+                <div class="row">
+                  <div class="col-md-12">
+                    <h4 class="package-name"><i class="fa fa-warning" style="color: red;"></i><span
+                    style="margin-left: 6px;"><%= site.title %></span></h4>
+                  </div>
+                  <div class="col-md-12">
+                    <p class="package-description">
+                      <%= site.url %></p>
+                  </div>
+                </div>
+              </a>
+
+          <% end %>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<footer id="footer" class="footer hidden-print" style="background-color: white">
+  <div class="mostused-packages text-center hidden-xs hidden-sm" style="background-color: white;border:none;">
+
+    <%= render :partial => 'layouts/contact_bottom' %>
+
+  </div>
+
+  <%= render :partial => 'layouts/copyright' %>
+
+</footer>
+</body>

@@ -1,0 +1,23 @@
+
+<%= render :partial => 'layouts/notice' %>
+
+<header class="site-header jumbotron">
+
+  <%= render :partial => 'layouts/sitenav' %>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12"><h1><%= Settings.get('site','name') %></h1>
+        <p><%= Settings.get('site','s_name') %></p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="container" style="line-height: 40px;">
+  <%= raw @page.content %>
+</main>
+<footer id="footer" class="footer hidden-print" style="background-color: white;padding-top: 20px;">
+
+  <%= render :partial => 'layouts/copyright' %>
+</footer>

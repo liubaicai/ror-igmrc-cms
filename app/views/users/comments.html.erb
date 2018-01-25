@@ -1,0 +1,55 @@
+
+<body style="background-color: #f4f4f4;">
+<div class="row">
+  <div class="col-xs-12 col-sm-12 col-md-12">
+    <div class="panel panel-default">
+      <!-- Default panel contents -->
+      <div class="panel-heading">我的评论</div>
+
+      <!-- Table -->
+      <table class="table">
+        <thead>
+        <tr>
+          <th style="width:70%">评论内容</th>
+          <th>评论时间</th>
+          <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+
+
+        <% @comments.each do |comment| %>
+            <tr>
+              <% if comment.article_id.nil? %>
+                  <td><a href="/sites/<%= comment.site_id %>" target="_blank"><%= comment.content[0..50] %></a></td>
+              <% else %>
+                  <td><a href="/articles/<%= comment.article_id %>" target="_blank"><%= comment.content[0..50] %></a></td>
+              <% end %>
+              <td><%= time_tostring2(comment.created_at.localtime) %></td>
+              <td><%= link_to '删除', comment, :method => :delete, data: { confirm: '确定删除吗?' } %></td>
+            </tr>
+        <% end %>
+
+        </tbody>
+      </table>
+
+
+    </div>
+
+    <nav>
+      <div class="row pagination" style="margin-top: 20px;">
+        <%=will_paginate @comments , renderer: BootstrapPagination::Rails%>
+      </div>
+    </nav>
+  </div>
+</div>
+<script>
+  $(document).ready(function () {
+    $(window.parent.document).find("#iframe").load(function () {
+      var main = $(window.parent.document).find("#iframe");
+      var thisheight = $(document).height() + 30;
+      main.height(thisheight);
+    });
+  });
+</script>
+</body>

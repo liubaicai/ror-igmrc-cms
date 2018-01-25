@@ -1,0 +1,231 @@
+<body>
+
+<%= render :partial => 'layouts/notice' %>
+
+<header class="site-header " style="height: 50px;">
+
+  <%= render :partial => 'layouts/sitenav' %>
+
+</header>
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+
+      <h1>搜索结果 <span style="margin-left: 20px;font-size: 14px;color: grey;">关键词：<span id="keyword"
+                                                                                      style="color: red">滕州</span> &nbsp;&nbsp;&nbsp;共找到&nbsp;网站：<span
+      id="site_total">0</span> &nbsp;文章：<span id="article_total">0</span></span>
+      </h1>
+      <hr/>
+    </div>
+  </div>
+</div>
+<main id="all-packages">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12" style="margin-bottom: 12px;">
+        <h4>匹配到的网站 </h4>
+      </div>
+    </div>
+    <div class="list-group packages" id="sites_result">
+    </div>
+    <div id="site_more"
+         style="cursor: pointer;text-align: center;font-size:14px;color: #cccccc;height: 40px;margin-top: 10px;">
+
+      加载更多结果
+    </div>
+
+    <div class="row">
+      <div class="col-xs-12" style="margin-bottom: 12px;">
+        <h4>匹配到的文章 </h4>
+      </div>
+    </div>
+    <div class="list-group" id="article_result">
+
+
+    </div>
+    <div id="article_more"
+         style="cursor: pointer;text-align: center;font-size:14px;color: #cccccc;height: 40px;margin-top: 10px;">
+      加载更多结果
+    </div>
+  </div>
+</main>
+<footer id="footer" class="footer hidden-print" style="background-color: white">
+  <div class="mostused-packages text-center hidden-xs hidden-sm" style="background-color: white;border:none;">
+
+    <%= render :partial => 'layouts/contact_bottom' %>
+
+  </div>
+
+  <%= render :partial => 'layouts/copyright' %>
+
+</footer>
+<script type="text/javascript">
+  $(document).ready(function () {
+
+    var site_page = 0;
+    var site_total = 0;
+    var site_limit = 10;
+
+    function site_hasMore() {
+      if ((site_page) * site_limit >= site_total)return false;
+      return true;
+    }
+
+    var article_page = 0;
+    var article_total = 0;
+    var article_limit = 10;
+
+    function article_hasMore() {
+      if ((article_page) * article_limit >= article_total)return false;
+      return true;
+    }
+
+    function getUrlVars() {
+      var vars = [], hash;
+      var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+      for (var i = 0; i < hashes.length; i++) {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+      }
+      return vars;
+    }
+
+    var params = getUrlVars();
+    var keyword = decodeURI(params[params[0]]);
+    $("#keyword").html(decodeURI(keyword));
+
+
+    //网站搜索的方法
+    var site_requestURL = "/search_sites?key=" + keyword + "&lmt=10"
+    $.ajax({
+      url: site_requestURL,
+      type: 'GET',
+      dataType: 'json',
+      headers: {
+        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+      },
+      success: function (data) {
+        $("#site_more").hide()
+        var obj = eval(data);
+        var itemArray = eval(obj.data); //数组
+        site_page = obj.idx;
+        site_total = obj.total;
+        $("#site_total").html(site_total);
+        $.each(itemArray, function (index, item) {
+          var itemHTML = getSiteItemHTML(itemArray[index]);
+          $("#sites_result").append(itemHTML);
+          if (site_hasMore())$("#site_more").show();
+          else $("#site_more").hide();
+        });
+      }
+    })
+
+    $("#site_more").click(function () {
+      sites_LoadNext();
+    });
+
+    function sites_LoadNext() {
+      site_page++;
+      var requestURL = "/search_sites?key=" + keyword + "&idx=" + site_page + "&lmt=" + site_limit;
+      $.ajax({
+        url: requestURL,
+        type: 'GET',
+        dataType: 'json',
+        headers: {
+          'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function (data) {
+          var obj = eval(data);
+          var itemArray = eval(obj.data); //数组
+          $.each(itemArray, function (index, item) {
+            var itemHTML = getSiteItemHTML(itemArray[index]);
+            $("#sites_result").append(itemHTML);
+            if (site_hasMore())$("#site_more").show();
+            else $("#site_more").hide();
+          });
+        }
+      })
+    }
+
+    function getSiteItemHTML(obj) {
+      var id=obj.id;
+      var alias_url = obj.alias_url;
+      var title = obj.title;
+      var url = obj.url;
+      var reason = obj.reason;
+      var shortreason = obj.short_reason;
+      var count = obj.count;
+      var note = obj.note;
+      var site_type_title = obj.site_type.title;
+      return ' <a href="/site/'+alias_url+'.html" class="package list-group-item" data-library-name="bootstrap" target="_blank"> <div class="row"> <div class="col-md-3"> <h4 class="package-name">'+url+'</h4> </div> <div class="col-md-9"> <p class="package-description">' + title + '</p> </div> <div class="package-extra-info col-md-12  col-xs-12"> <div class="row"> <div class="col-md-3"> <span> <h5 class="package-name" style="color: red;">网站类型：' + site_type_title + '</h5> </span> </div> <div class="col-md-3"><span><h5 style="font-weight: normal;">举报原因：' + shortreason + '</h5></span></div> <div class="col-md-3"><span><h5 style="font-weight: normal;">举报次数：' + count + '次</h5></span></div> <div class="col-md-3"><span><h5 style="font-weight: normal;">备注：' + note + '</h5></span></div> </div> </div> </div> </a>';
+   }
+
+
+    //文章搜索部分
+    var article_requestURL = "/search_articles?key=" + keyword + "&lmt=10"
+    $.ajax({
+      url: article_requestURL,
+      type: 'GET',
+      dataType: 'json',
+      headers: {
+        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+      },
+      success: function (data) {
+        $("#article_more").hide();
+        var obj = eval(data);
+        var itemArray = eval(obj.data); //数组
+        article_page = obj.idx;
+        article_total = obj.total;
+        $("#article_total").html(article_total);
+        $.each(itemArray, function (index, item) {
+          var itemHTML = getArticleItemHTML(itemArray[index]);
+          $("#article_result").append(itemHTML);
+          if (article_hasMore())$("#article_more").show();
+          else $("#article_more").hide();
+        });
+      }
+    })
+
+    $("#article_more").click(function () {
+      articles_LoadNext();
+    });
+
+    function articles_LoadNext() {
+      article_page++;
+      var requestURL = "/search_articles?key=" + keyword + "&idx=" + article_page + "&lmt=" + article_limit;
+      $.ajax({
+        url: requestURL,
+        type: 'GET',
+        dataType: 'json',
+        headers: {
+          'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function (data) {
+          var obj = eval(data);
+          var itemArray = eval(obj.data); //数组
+          $.each(itemArray, function (index, item) {
+            var itemHTML = getArticleItemHTML(itemArray[index]);
+            $("#article_result").append(itemHTML);
+            if (article_hasMore())$("#article_more").show();
+            else $("#article_more").hide();
+          });
+        } //成功执行方法
+      })
+    }
+
+
+    function getArticleItemHTML(obj) {
+      var id = obj.id;
+      var title = obj.title;
+      var alias_url = obj.alias_url;
+      var content = obj.content;
+      var user = obj.user.nickname;
+      var articleDate = new Date(obj.created_at);
+      return '<a href="/article/'+alias_url+'.html" class="list-group-item"> <h4 class="list-group-item-heading" style="color: #27AE60;">' + title + '</h4> <section class="post-meta" style="font-size: 12px;margin-top: 6px;margin-bottom: 6px;"> <span class="author">作者：<span style="color: #27AE60;">' + user + '</span></span> • <time class="post-date" datetime="2015年8月24日星期一凌晨2点54分">' + articleDate.getFullYear() + '年' + (articleDate.getMonth() + 1) + '月' + articleDate.getDate() + '日 </time> </section> <p class="list-group-item-text">' + content + '...</p> </a>';
+
+    }
+  });
+
+</script>
+</body>

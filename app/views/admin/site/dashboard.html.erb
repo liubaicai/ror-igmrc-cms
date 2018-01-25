@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>SB Admin 2 - Bootstrap Admin Theme</title>
+
+  <%= render :partial => 'layouts/admin_assets' %>
+
+</head>
+
+<body>
+
+<div id="wrapper">
+
+
+  <div id="page-wrapper" style="margin: 0px;">
+    <div class="row">
+      <div class="col-lg-12">
+        <h1 class="page-header">仪表盘</h1>
+      </div>
+      <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+    <div class="row">
+      <div class="col-lg-3 col-md-6">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <div class="row">
+              <div class="col-xs-3">
+                <i class="fa fa-comments fa-5x"></i>
+              </div>
+              <div class="col-xs-9 text-right">
+                <div class="huge"><%= get_today_comments_count %></div>
+                <div>今日评论</div>
+              </div>
+            </div>
+          </div>
+          <a href="commet-list.html">
+            <div class="panel-footer">
+              <span class="pull-left">查看详情</span>
+              <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+              <div class="clearfix"></div>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="panel panel-green">
+          <div class="panel-heading">
+            <div class="row">
+              <div class="col-xs-3">
+                <i class="fa fa-tasks fa-5x"></i>
+              </div>
+              <div class="col-xs-9 text-right">
+                <div class="huge"><%= get_today_articles_count %></div>
+                <div>今日发布的文章</div>
+              </div>
+            </div>
+          </div>
+          <a href="article-list.html">
+            <div class="panel-footer">
+              <span class="pull-left">查看详情</span>
+              <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+              <div class="clearfix"></div>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="panel panel-yellow">
+          <div class="panel-heading">
+            <div class="row">
+              <div class="col-xs-3">
+                <i class="fa fa-child fa-5x"></i>
+              </div>
+              <div class="col-xs-9 text-right">
+                <div class="huge"><%= get_today_users_count %></div>
+                <div>新注册会员</div>
+              </div>
+            </div>
+          </div>
+          <a href="member.html">
+            <div class="panel-footer">
+              <span class="pull-left">查看详情</span>
+              <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+              <div class="clearfix"></div>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="panel panel-red">
+          <div class="panel-heading">
+            <div class="row">
+              <div class="col-xs-3">
+                <i class="fa fa-support fa-5x"></i>
+              </div>
+              <div class="col-xs-9 text-right">
+                <div class="huge"><%= get_today_sites_count %></div>
+                <div>今日举报的站点</div>
+              </div>
+            </div>
+          </div>
+          <a href="site-list.html">
+            <div class="panel-footer">
+              <span class="pull-left">查看详情</span>
+              <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+              <div class="clearfix"></div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /#page-wrapper -->
+
+</div>
+<!-- /#wrapper -->
+
+
+
+</body>
+
+</html>

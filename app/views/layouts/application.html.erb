@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>
+    <% if !@article.nil? %>
+        <%= @article.title %>
+    <% elsif !@page.nil? %>
+        <%= @page.title %>
+    <% elsif !@title.nil? %>
+        <%= @title %>
+    <% else %>
+        <%= Settings.get('site','title') %>
+    <% end %>
+  </title>
+
+  <!-- Bootstrap 核心文件 -->
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+  <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
+  <script type="text/javascript" src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script src="/js/rails.js"></script>
+  <link href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet">
+
+  <link href="/css/site.css" rel="stylesheet">
+
+  <% if @is_show_login_assets %>
+      <script src="/js/jquery.backstretch.min.js"></script>
+      <script src="/js/scripts.js"></script>
+      <link href="/css/login-style.css" rel="stylesheet">
+      <link href="/css/form-elements.css" rel="stylesheet">
+  <% end %>
+
+  <% if request.url.to_s.include?('/admin') %>
+      <%= render :partial => 'layouts/admin_assets' %>
+  <% end %>
+
+  <%= csrf_meta_tags %>
+</head>
+
+<%= yield %>
+
+<script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?56c771ddf8de2d71104dd1f9a25c22a1";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+</html>

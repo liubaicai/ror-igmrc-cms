@@ -1,0 +1,190 @@
+<body style="background-color: #f4f4f4;">
+
+<%= render :partial => 'layouts/notice' %>
+
+<header class="site-header jumbotron">
+
+  <%= render :partial => 'layouts/sitenav' %>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12"><h1><%= @article.article_type.title %></h1>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="content-wrap" style="margin-top: 20px;">
+  <div class="container">
+    <div class="row">
+      <main class="col-md-12 main-content">
+
+        <article id="2" class="post tag-https">
+
+          <header class="post-head">
+            <h1 class="post-title"><%= @article.title %></h1>
+            <section class="post-meta">
+              <span class="author">作者：<a href="#">
+                <% unless @article.user.nil? %>
+                    <%= @article.user.nickname %>
+                <% end %>
+              </a></span>
+              <time class="post-date">
+                <%= time_tostring(@article.created_at.localtime) %>
+              </time>
+            </section>
+          </header>
+
+
+          <section class="post-content">
+            <%= raw @article.content %>
+          </section>
+
+          <footer class="post-footer clearfix">
+            <div class="pull-left tag-list">
+              <i class="fa fa-folder-open-o"></i>
+              <a href="#"><% unless @article.article_type.nil? %><%= @article.article_type.title %><% end %></a>
+            </div>
+
+            <div class="pull-right share">
+              <!-- JiaThis Button BEGIN -->
+              <div class="jiathis_style_32x32">
+                <a class="jiathis_button_qzone"></a>
+                <a class="jiathis_button_tsina"></a>
+                <a class="jiathis_button_tqq"></a>
+                <a class="jiathis_button_weixin"></a>
+                <a class="jiathis_button_renren"></a>
+                <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis"
+                   target="_blank"></a>
+              </div>
+              <script type="text/javascript" src="http://v3.jiathis.com/code/jia.js"
+                      charset="utf-8"></script>
+              <!-- JiaThis Button END -->
+            </div>
+          </footer>
+
+        </article>
+
+        <% unless @comments.nil? || @comments.size==0 %>
+            <div class="about-author clearfix comment">
+
+              <% @comments.each do |comment| %>
+                  <div class="media">
+                    <div class="media-left">
+                      <a href="#">
+                        <img class="media-object"
+                             src="<%= comment.user.avatar %>"
+                             data-holder-rendered="true" style="width: 64px; height: 64px;">
+                      </a>
+                    </div>
+                    <div class="media-body">
+                      <h4 class="media-heading"><%= comment.user.nickname %></h4>
+                      <div class="comment_date"><%= time_tostring2(comment.created_at.localtime) %></div>
+                      <div class="comment_body"><%= comment.content %></div>
+
+                      <% unless comment.admin_comment.nil? || comment.admin_comment=='' %>
+                          <div class="alert alert-info" role="alert">
+                            <strong>管理员回复</strong> <%= comment.admin_comment %>
+                          </div>
+                      <% end %>
+
+                    </div>
+
+                  </div>
+              <% end %>
+
+              <div class="row pagination" style="margin-top: 20px;">
+                <%=will_paginate @comments , renderer: BootstrapPagination::Rails%>
+              </div>
+            </div>
+        <% end %>
+        <div class="about-author clearfix">
+          <%= form_tag('/comments', method: 'post', id: 'ajax_form') do |f| %>
+
+              <input type="text" name="form-redirect"
+                     class="hide" id="form-redirect" value="<%= get_current_url %>">
+
+              <input type="text" name="form-article-id"
+                     class="hide" id="form-article-id" value="<%= @article.id %>">
+
+              <% unless check_user_auth %>
+                  <div class="alert alert-danger" role="alert">
+                    <strong>请<a class="alert-link" href="/login.html">登陆</a>之后再评论!</strong>
+                  </div>
+              <% else %>
+              <textarea class="form-group form-control search commetnTextArea"
+                        <% unless check_user_auth %> readonly="readonly" <% end %>
+                        id="form-content" name="form-content"
+                        placeholder="输入您的评论" style="height: 100px;resize: none;"></textarea>
+
+                  <div class="col-md-12" style="margin-top: 12px;">
+
+                    <div id="ajax-error"></div>
+
+                    <% unless @error_msg.nil? %>
+                        <div class="alert alert-danger" role="alert">
+                          <strong><%= @error_msg %></strong>
+                        </div>
+                    <% end %>
+                    <button type="button" onclick="submit_form();" class="btn-green btn-green-default" style="float: right;">评论</button>
+
+                    <%= text_field_tag :captcha %>
+                    <%= captcha_tag(id:'form-code-image') %>
+                  </div>
+              <% end %>
+          <% end %>
+
+        </div>
+      </main>
+
+
+    </div>
+  </div>
+</section>
+<footer id="footer" class="footer hidden-print" style="background-color: white">
+  <div class="mostused-packages text-center hidden-xs hidden-sm" style="background-color: white;border:none;">
+
+    <%= render :partial => 'layouts/contact_bottom' %>
+
+  </div>
+
+  <%= render :partial => 'layouts/copyright' %>
+
+</footer>
+
+<script>
+  jQuery(document).ready(function() {
+    var code = document.getElementById("form-code-image");
+    code.onclick = function(){
+      code.src = '/captcha?time='+new Date();
+    }
+  });
+  function submit_form(){
+    var str_data=$("#ajax_form input").map(function(){
+      return ($(this).attr("name")+'='+$(this).val());
+    }).get().join("&");
+    var str_data2=$("#ajax_form textarea").map(function(){
+      return ($(this).attr("name")+'='+$(this).val());
+    }).get().join("&");
+    $.ajax({
+      url: '/func/post_comments',
+      method: 'POST',
+      data: str_data+"&"+str_data2,
+      processData: false,
+      contentType: 'application/x-www-form-urlencoded',
+      headers: {
+        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+      },
+      success: function(result) {
+        if(result == 'true'){
+          window.location.reload()
+        }
+        else {
+          $("#ajax-error").html("<div class='alert alert-danger' role='alert'><strong>"+result+"</strong></div>");
+          document.getElementById("form-code-image").src = '/captcha?time='+new Date();
+        }
+      }
+    });
+  }
+</script>
+</body>

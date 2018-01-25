@@ -1,0 +1,195 @@
+
+<body style="background-color: #f4f4f4;">
+<div class="site-notice">
+  <a href="<%= Settings.get('site','top_notice_link') %>" target="_blank">
+    <em><%= Settings.get('site','top_notice') %></em>
+  </a>
+</div>
+<header class="site-header">
+
+  <%= render :partial => 'layouts/sitenav' %>
+
+</header>
+
+<section class="content-wrap" style="margin-top: 20px;">
+  <div class="container">
+
+    <!-- Top content -->
+    <div class="top-content">
+
+      <div class="inner-bg">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-8 col-sm-offset-2 text">
+              <h1><strong>IGMRC
+              </strong></h1>
+              <div class="description">
+                <p>
+                  互联网反赌反传舆情举报中心
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-6 col-sm-offset-3 form-box">
+              <div class="form-top">
+                <div class="form-top-left">
+                  <h3>注册IGMRC账户</h3>
+                  <p>注册到IGMRC您便可以举报非法网站以及接受站内通知</p>
+                </div>
+                <div class="form-top-right">
+                  <i class="fa fa-key"></i>
+                </div>
+              </div>
+              <div class="form-bottom">
+                <%= form_tag('/users/register', method: 'post', class: 'login-form', id: 'ajax_form') do |f| %>
+                    <div class="form-group">
+                      <label class="sr-only" for="form-username">用户名</label>
+                      <input type="text" name="form-username" placeholder="用户名"
+                             class="form-username form-control" id="form-username">
+                    </div>
+                    <div class="form-group">
+                      <label class="sr-only" for="form-password">密码</label>
+                      <input type="password" name="form-password" placeholder="密码"
+                             class="form-password form-control" id="form-password">
+                    </div>
+                    <div class="form-group">
+                      <label class="sr-only" for="form-repassword">确认密码</label>
+                      <input type="password" name="form-repassword" placeholder="确认密码"
+                             class="form-password form-control" id="form-repassword">
+                    </div>
+                    <div class="form-group">
+                      <label class="sr-only" for="form-phone">手机号</label>
+                      <input type="text" name="form-phone" placeholder="手机号"
+                             class="form-password form-control" id="form-phone">
+
+                    </div>
+
+                    <div class="form-group">
+                      <label class="sr-only" for="form-sms">短信验证码</label>
+                      <div class="row">
+                        <div class="col-md-8">
+                          <input type="text" name="form-sms" placeholder="短信验证码"
+                                 class="form-password form-control" id="form-sms">
+                        </div>
+                        <div class="col-md-4">
+                          <button type="button" class="btn" id="form-sms-button">获取验证码</button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="sr-only" for="form-code">验证码</label>
+                      <div class="row">
+                        <div class="col-md-8">
+                          <%= text_field_tag :captcha %>
+                        </div>
+                        <div class="col-md-4">
+                          <%= captcha_tag(id:'form-code-image') %>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="alert alert-danger <%= @error_class %>" role="alert">
+                      <strong>注册失败!</strong> <%= @error_msg %>
+                    </div>
+                    <div id="ajax-error"></div>
+                    <button type="button" onclick="submit_form();" class="btn">注册</button>
+                    <a href="/login.html" style="color:#4c4c4c;">已有账号？点此登陆</a>
+              <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+  </div>
+</section>
+<footer id="footer" class="footer hidden-print" style="border-top: 0px #eee solid;">
+  <div class="mostused-packages text-center hidden-xs hidden-sm">
+
+    <%= render :partial => 'layouts/contact_bottom' %>
+
+  </div>
+
+  <%= render :partial => 'layouts/copyright' %>
+
+</footer>
+
+<script>
+  jQuery(document).ready(function() {
+    var step = 59;
+    var sms = document.getElementById("form-sms-button");
+    sms.onclick = function(){
+      $.ajax({
+        url: '/func/sms_send_reg',
+        method: 'POST',
+        data: "phone="+$("#form-phone").val(),
+        processData: false,
+        contentType: 'application/x-www-form-urlencoded',
+        headers: {
+          'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(result) {
+          if(result == 'true'){
+            $(sms).text('重新发送60');
+            var _res = setInterval(function()
+            {
+              $(sms).attr("disabled", true);//设置disabled属性
+              $(sms).text('重新发送'+step);
+              step-=1;
+              if(step <= 0){
+                $(sms).removeAttr("disabled"); //移除disabled属性
+                $(sms).text('获取验证码');
+                clearInterval(_res);//清除setInterval
+              }
+            },1000);
+          }
+          else {
+            $("#ajax-error").html("<div class='alert alert-danger' role='alert'><strong>"+result+"</strong></div>");
+          }
+        }
+      });
+    }
+  });
+
+  function submit_form(){
+    var isready = true;
+    $("#ajax_form").find('input[type="text"], input[type="password"]').each(function(){
+      if( $(this).val() == "" ) {
+        $(this).addClass('input-error');
+        isready = false;
+      }
+      else {
+        $(this).removeClass('input-error');
+      }
+    });
+    if(isready==true){
+      var str_data=$("#ajax_form input").map(function(){
+        return ($(this).attr("name")+'='+$(this).val());
+      }).get().join("&");
+      $.ajax({
+        url: '/func/register',
+        method: 'POST',
+        data: str_data,
+        processData: false,
+        contentType: 'application/x-www-form-urlencoded',
+        headers: {
+          'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(result) {
+          if(result == 'true'){
+            window.location.href = '/';
+          }
+          else {
+            $("#ajax-error").html("<div class='alert alert-danger' role='alert'><strong>"+result+"</strong></div>");
+            document.getElementById("form-code-image").src = '/captcha?time='+new Date();
+          }
+        }
+      });
+    }
+  }
+</script>
+</body>

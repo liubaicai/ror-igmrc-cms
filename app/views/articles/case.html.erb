@@ -1,0 +1,50 @@
+<body style="background-color: #f4f4f4;">
+
+  <%= render :partial => 'layouts/notice' %>
+
+  <header class="site-header jumbotron">
+
+    <%= render :partial => 'layouts/sitenav' %>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12"><h1>真实案例</h1>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="content-wrap" style="margin-top: 20px;">
+    <div class="container">
+      <div class="row">
+        <main class="col-md-12 main-content">
+          <div class="list-group">
+
+            <% @articles.each do |article| %>
+                <a href="<%= '/article/'+article.alias_url+'.html' %>" class="list-group-item">
+                  <h4 class="list-group-item-heading"><%= article.title %></h4>
+                  <section class="post-meta" style="font-size: 12px;margin-top: 6px;margin-bottom: 6px;">
+                    <span class="author">作者：<span style="color: #27AE60;"><%= article.user.nickname %></span></span> •
+                    <time class="post-date"><%= time_tostring(article.created_at.localtime) %></time>
+                  </section>
+                  <p class="list-group-item-text"><%= strip_tags(article.content)[0..240] %>...</p>
+                </a>
+            <% end %>
+
+          </div>
+
+          <div class="row pagination" style="margin-top: 20px;">
+            <%=will_paginate @articles , renderer: BootstrapPagination::Rails, previous_label:'«' , next_label:'»' %>
+          </div>
+        </main>
+
+
+      </div>
+    </div>
+  </section>
+  <footer id="footer" class="footer hidden-print" style="background-color: white">
+
+    <%= render :partial => 'layouts/copyright' %>
+
+  </footer>
+</body>

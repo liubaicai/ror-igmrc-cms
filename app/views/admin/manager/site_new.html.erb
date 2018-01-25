@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
+  <link href="//cdn.bootcss.com/summernote/0.6.16/summernote.css" rel="stylesheet">
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+  <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
+  <script type="text/javascript" src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script src="//cdn.bootcss.com/jquery-mockjax/1.6.2/jquery.mockjax.min.js"></script>
+  <script src="//cdn.bootcss.com/summernote/0.6.16/summernote.js"></script>
+  <script src="/layer/layer.js"></script>
+  <meta charset="utf-8">
+  <!--
+  Created using JS Bin
+  http://jsbin.com
+
+  Copyright (c) 2016 by mozillazg (http://jsbin.com/taxire/6/edit)
+
+  Released under the MIT license: http://jsbin.mit-license.org
+  -->
+  <meta name="robots" content="noindex">
+  <title>IGMRC</title>
+
+
+</head>
+<body>
+<div id="wrapper">
+  <div class="col-lg-12" style="margin-top: 12px;">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        举报网站信息编辑
+      </div>
+      <div class="panel-body">
+        <div id="ajax-notice"></div>
+        <div class="row">
+          <div class="col-lg-12">
+            <%= form_tag('/admin/site-new', method: 'post', role: 'form') do |f| %>
+                <div class="form-group">
+                  <label>网站地址</label>
+                  <input class="form-control" name="form_url" placeholder="输入网址">
+                </div>
+                <div class="form-group">
+                  <label>网站品牌</label>
+                  <input class="form-control" name="form_title" placeholder="输入网站品牌">
+                </div>
+                <div class="form-group" id="site-snapshots">
+                  <label>网站截图</label>
+                  <input class="hidden" id="form_images" name="form_images" value="">
+
+                  <input id="avatar_file" type="file" style="display:none" onchange="handleFiles(this.files)" accept="image/*">
+                </div>
+                <div class="form-group">
+                  <div id="shot-div-progress" class="progress hide">
+                    <div class="progress-bar progress-bar-striped active"
+                         role="progressbar" id="shot-progress" aria-valuenow="0" aria-valuemin="0"
+                         aria-valuemax="100" style="width: 45%">
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <button onclick="$('input[id=avatar_file]').click();" style="margin-top: 12px;" type="button" class="btn btn-default">上传新截图</button>
+                </div>
+                <div class="form-group">
+                  <label>网站类型</label>
+                  <select class="form-control" name="form_type">
+                    <% @site_types.each do |type| %>
+                        <option><%= type.title %></option>
+                    <% end %>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>举报原因</label>
+                  <input class="form-control" name="form_short_reason" placeholder="输入举报原因">
+                </div>
+                <div class="form-group">
+                  <label>详细信息</label>
+                  <textarea class="form-control search" placeholder="输入详细的信息" name="form_reason" style="height: 200px;resize: none;"></textarea>
+                </div>
+
+                <div class="form-group">
+                  <label>举报次数</label>
+                  <input class="form-control" name="form_count" placeholder="举报次数" value="">
+                </div>
+
+                <!--<div class="form-group">-->
+                <!--<label>危险等级  数字越高风险越大</label>-->
+                <!--<select class="form-control">-->
+                <!--<option>1</option>-->
+                <!--<option>2</option>-->
+                <!--<option>3</option>-->
+                <!--<option>4</option>-->
+                <!--<option>4</option>-->
+                <!--</select>-->
+                <!--</div>-->
+
+                <div class="form-group">
+                  <label>备注</label>
+                  <input class="form-control" name="form_note" placeholder="备注" value="">
+                </div>
+
+                <button id="saveButton" class="btn btn-default">保存所做的更改</button>
+
+            <% end %>
+          </div>
+          <!-- /.col-lg-6 (nested) -->
+
+        </div>
+        <!-- /.row (nested) -->
+      </div>
+      <!-- /.panel-body -->
+    </div>
+    <!-- /.panel -->
+  </div>
+</div>
+<script>
+  //  $(document).ready(function () {
+  //    $("#saveButton").click(function () {
+  //      layer.alert('保存信息成功!');
+  //    });
+  //  });
+  var all_images = '';
+  function handleFiles(files) {
+    if (files.length) {
+      var file = files[0];
+      var maxsize = 2*1024*1024;
+      if(file.size > maxsize){
+        alert('上传的附件文件不能超过2M!')
+      }
+      else {
+        upload_file(file)
+      }
+    }
+  }
+  var process_count = 0;
+  var shot_count = 1;
+  function processInterval()
+  {
+    process_count = process_count+1;
+    $("#shot-progress").attr("style","width: "+process_count+"%");
+  }
+  function deleteSiteImage(obj,image) {
+    all_images = all_images.replace(',' + image + ',', ',').replace(image + ',', '').replace(',' + image, '').replace(image, '');
+    $("#form_images").val(all_images);
+    obj.parentNode.parentNode.removeChild(obj.parentNode);
+  }
+  function upload_file(file) {
+    var data = new FormData();
+    data.append('fileup', file);
+    $("#shot-div-progress").removeClass('hide');
+    process_count=0;
+    var inter_id = setInterval("processInterval()",50);//1000为1秒钟
+    $("#shot-progress").attr("style","width: "+process_count+"%");
+    $.ajax({
+      url: '/func/upload_image',
+      method: 'POST',
+      data: data,
+      processData: false,
+      contentType: false,
+      headers: {
+        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+      },
+      success: function (result) {
+        if (result != 'false') {
+          $("#site-snapshots").append('<div style="margin-top: 20px;"><img style="max-width: 40%;"src="' + result + '"/><br/> <button style="margin-top: 12px;" onclick="deleteSiteImage(this,\'' + result + '\')" type="button" class="btn btn-default btn-xs">删除</button> </div>');
+          if(all_images) {
+            all_images = all_images + ',';
+          }
+          all_images=all_images+result;
+          $("#form_images").val(all_images);
+        }
+        else {
+          $("#ajax-notice").html("<div class='alert alert-danger' role='alert'><strong>截图上传失败!</strong></div>");
+        }
+        clearInterval(inter_id);
+        $("#shot-div-progress").addClass('hide');
+      }
+    });
+  }
+</script>
+
+
+</body>
+</html>

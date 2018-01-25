@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
+  <link href="//cdn.bootcss.com/summernote/0.6.16/summernote.css" rel="stylesheet">
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+  <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
+  <script type="text/javascript" src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script src="//cdn.bootcss.com/jquery-mockjax/1.6.2/jquery.mockjax.min.js"></script>
+  <script src="//cdn.bootcss.com/summernote/0.6.16/summernote.js"></script>
+  <script src="/layer/layer.js"></script>
+  <meta charset="utf-8">
+  <!--
+  Created using JS Bin
+  http://jsbin.com
+
+  Copyright (c) 2016 by mozillazg (http://jsbin.com/taxire/6/edit)
+
+  Released under the MIT license: http://jsbin.mit-license.org
+  -->
+  <meta name="robots" content="noindex">
+  <title>IGMRC</title>
+
+
+</head>
+<body>
+<div id="wrapper">
+  <div class="col-lg-12" style="margin-top: 12px;">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        发布新的文章
+      </div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-lg-12">
+            <%= form_tag('/admin/article-new', method: 'post', role: 'form') do |f| %>
+                <div class="form-group">
+                  <label>文章标题</label>
+                  <input class="form-control" name="form_title" placeholder="输入文章的标题">
+                </div>
+                <div class="form-group">
+                  <label>文章栏目</label>
+                  <select class="form-control" name="form_type">
+                    <% @article_types.each do |type| %>
+                        <option><%= type.title %></option>
+                    <% end %>
+                  </select>
+                </div>
+                <textarea id="editor" name="form_content"></textarea>
+                <button type="submit" class="btn btn-default">发布文章</button>
+            <% end %>
+          </div>
+          <!-- /.col-lg-6 (nested) -->
+
+        </div>
+        <!-- /.row (nested) -->
+      </div>
+      <!-- /.panel-body -->
+    </div>
+    <!-- /.panel -->
+  </div>
+</div>
+
+<script>
+  $(function () {
+
+    $('#editor').summernote({
+      height: "300px",
+      onImageUpload: function(files) {
+        var $editor = $(this);
+        var data = new FormData();
+        data.append('fileup', files[0]);
+        $.ajax({
+          url: '/func/upload_image',
+          method: 'POST',
+          data: data,
+          processData: false,
+          contentType: false,
+          headers: {
+            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+          },
+          success: function (data) {
+            var imgURL = data;
+            $editor.summernote('insertImage', imgURL);
+          }
+        });
+      }
+    });
+
+    //ajax emulation
+//    $.mockjax({
+//      url: '/upload',
+//      type: 'POST',
+//      status: 200,
+//      responseText: {
+//        url: "http://img.amiami.jp/images/product/main/152/MED-CD2-18780.jpg"
+//      }
+//    });
+  });
+</script>
+<script src="https://static.jsbin.com/js/render/edit.js?3.39.12"></script>
+
+<script>
+  (function (i, s, o, g, r, a, m) {
+    i['GoogleAnalyticsObject'] = r;
+    i[r] = i[r] || function () {
+          (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date();
+    a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0];
+    a.async = 1;
+    a.src = g;
+    m.parentNode.insertBefore(a, m)
+  })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+  ga('create', 'UA-1656750-34', 'auto');
+  ga('require', 'linkid', 'linkid.js');
+  ga('require', 'displayfeatures');
+  ga('send', 'pageview');
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,120 @@
+<body>
+
+<%= render :partial => 'layouts/notice' %>
+
+<header class="site-header jumbotron">
+
+  <%= render :partial => 'layouts/sitenav' %>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12"><h1><%= Settings.get('site','name') %><sup><span style="font-size: 22px;">Beta</span></sup></h1>
+          <p><%= Settings.get('site','s_name') %><br><span class="package-amount">共收录了 <strong><%= Settings.get('site','site_count') %></strong> 个危险网站</span></p>
+        <form id="search-form" method="get" action="/search_result" class="" role="search">
+          <div class="form-group">
+            <input type="text" name="s" class="form-control search clearable"
+                                           placeholder="输入关键字查找内容">
+            <i class="fa fa-search" onclick="$('#search-form').submit();"></i>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+<div class="mostused-packages well well-sm text-center hidden-xs hidden-sm">
+
+  <%= render :partial => 'layouts/contact' %>
+
+</div>
+<div class="container protocal-notice">
+  <div class="row">
+    <div class="col-xs-12 hidden-xs">
+      <form class="form-inline pull-right">
+        <label>选择网站类型：</label>
+        <div class="btn-group" data-toggle="buttons">
+          <label class="btn btn-default <% if @type==1 %>active<% end %>">
+            <input type="radio" name="options" id="1">全部</label>
+          <label class="btn btn-default <% if @type==2 %>active<% end %>">
+            <input type="radio" name="options" id="2">传销</label>
+          <label class="btn btn-default <% if @type==3 %>active<% end %>">
+            <input type="radio" name="options" id="3">赌博</label>
+          <label class="btn btn-default <% if @type==4 %>active<% end %>">
+            <input type="radio" name="options" id="4">诈骗</label>
+        </div>
+                <span class="help-block"><a href="/page/privacy.html" target="_blank">免责声明 <i
+                class="fa fa-info-circle"></i></a></span>
+      </form>
+    </div>
+  </div>
+</div>
+<main class="packages-list-container" id="all-packages">
+  <div class="container">
+    <div class="list-group packages">
+
+      <% @sites.each do |site| %>
+
+          <a href="/site/<%= site.alias_url %>.html" class="package list-group-item" data-library-name="bootstrap" target="_blank">
+            <div class="row">
+              <div class="col-md-3">
+                <h4 class="package-name">
+                  <%= site.url %></h4>
+              </div>
+              <div class="col-md-9">
+                <p class="package-description"><%= site.title %></p>
+              </div>
+
+              <div class="package-extra-info col-md-12  col-xs-12">
+                <div class="row">
+                  <div class="col-md-3">
+                                <span>
+                                    <h5 class="package-name" style="color: red;">网站类型：<%= site.site_type.title %></h5>
+                                </span>
+                  </div>
+                  <div class="col-md-3"><span><h5 style="font-weight: normal;">举报原因：<%= site.short_reason %></h5></span></div>
+                  <div class="col-md-3"><span><h5 style="font-weight: normal;">举报次数：<%= site.count %>次</h5></span></div>
+                  <div class="col-md-3"><span><h5 style="font-weight: normal;">备注：<%= site.note %></h5></span></div>
+                </div>
+              </div>
+            </div>
+          </a>
+
+    <% end %>
+
+
+      <div class="row pagination" style="margin-top: 20px;">
+        <%=will_paginate @sites , renderer: BootstrapPagination::Rails, previous_label:'«' , next_label:'»' %>
+      </div>
+    </div>
+  </div>
+</main>
+<footer id="footer" class="footer hidden-print">
+  <div class="container">
+    <div class="row">
+      <div class="footer-about col-md-5 col-sm-12" id="about">
+        <%= raw Settings.get('site','bottom_left') %>
+      </div>
+      <div class="footer-links col-md-4 col-sm-12">
+        <%= raw Settings.get('site','bottom_center') %>
+      </div>
+
+      <div class="footer-sponsors col-md-3 col-sm-12">
+        <%= raw Settings.get('site','bottom_right') %>
+      </div>
+    </div>
+  </div>
+
+  <%= render :partial => 'layouts/copyright' %>
+
+</footer>
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    $("input[name=options]").change(function(){
+      go2url("/index.html?site_type="+$("input[name=options]:checked").attr("id"));
+    });
+  });
+  function go2url(loc){
+    window.location.href = loc;
+  }
+</script>
+</body>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
+  <link href="//cdn.bootcss.com/summernote/0.6.16/summernote.css" rel="stylesheet">
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+  <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
+  <script type="text/javascript" src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script src="//cdn.bootcss.com/jquery-mockjax/1.6.2/jquery.mockjax.min.js"></script>
+  <script src="//cdn.bootcss.com/summernote/0.6.16/summernote.js"></script>
+  <script src="/layer/layer.js"></script>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex">
+  <title>IGMRC</title>
+
+
+</head>
+<body>
+<div id="page-wrapper" style="margin-left: 12px; margin-right: 12px;">
+  <div class="row">
+    <div class="col-lg-12">
+      <h1 class="page-header">举报站点管理</h1>
+    </div>
+    <!-- /.col-lg-12 -->
+  </div>
+  <!-- /.row -->
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          最新站点列表
+        </div>
+        <!-- /.panel-heading -->
+        <%= form_tag('/admin/site-list.html', method: 'get') do |f| %>
+            <div class="form-group input-group"
+                 style="margin-top: 20px;margin-bottom: 20px;margin-left: 12px;margin-right: 12px;">
+              <input type="text" placeholder="输入网站的网址、名称、关键字 进行查找" class="form-control" name="s">
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="submit">
+                  <i class="fa fa-search"></i>
+                </button>
+              </span>
+            </div>
+        <% end %>
+        <div class="panel-body">
+          <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
+            <thead>
+            <tr>
+              <th>举报时间</th>
+              <th>网站名称</th>
+              <th>网址</th>
+              <th>举报类型</th>
+              <th>举报原因</th>
+              <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <% @sites.each do |site| %>
+                <tr class="odd">
+                  <td><%= time_tostring3(site.created_at.localtime) %></td>
+                  <td>
+                    <a target="_blank" href="/site/<%= site.alias_url %>.html">
+                      <%= site.title %>
+                    </a>
+                  </td>
+                  <td>
+                    <a target="_blank" href="<%= site.url %>">
+                      <%= site.url %>
+                    </a>
+                  </td>
+                  <td class="center"><%= site.site_type.title %></td>
+                  <td class="center" style="max-width: 200px;"><%= site.short_reason %></td>
+                  <% if site.is_valid %>
+                      <td class="center">已通过
+                        <a href="/admin/site-edit.html?id=<%= site.id %>">
+                          <button type="button" class="btn btn-default btn-xs">编辑</button>
+                        </a>
+                        <a href="/admin/site-delete.html?id=<%= site.id %>">
+                          <button type="button" class="btn btn-default btn-xs">删除</button>
+                        </a>
+                      </td>
+                  <% else %>
+                      <td class="center">
+                        <a href="/admin/site-pass.html?id=<%= site.id %>">
+                          <button type="button" class="btn btn-success btn-xs">通过</button>
+                        </a>
+                        <a href="/admin/site-delete.html?id=<%= site.id %>">
+                          <button type="button" class="btn btn-danger btn-xs">拒绝</button>
+                        </a>
+                        <a href="/admin/site-edit.html?id=<%= site.id %>">
+                          <button type="button" class="btn btn-default btn-xs">编辑</button>
+                        </a>
+                      </td>
+                  <% end %>
+                </tr>
+            <% end %>
+            </tbody>
+          </table>
+          <div class="row pagination" style="margin-top: 20px;">
+            <% begin %>
+                <%=will_paginate @sites , renderer: BootstrapPagination::Rails, previous_label:'«' , next_label:'»' %>
+            <% rescue Exception => e
+               end %>
+          </div>
+        </div>
+        <!-- /.panel-body -->
+      </div>
+      <!-- /.panel -->
+    </div>
+    <!-- /.col-lg-12 -->
+  </div>
+
+</div>
+
+
+<script src="https://static.jsbin.com/js/render/edit.js?3.39.12"></script>
+
+<script>
+  (function (i, s, o, g, r, a, m) {
+    i['GoogleAnalyticsObject'] = r;
+    i[r] = i[r] || function () {
+          (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date();
+    a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0];
+    a.async = 1;
+    a.src = g;
+    m.parentNode.insertBefore(a, m)
+  })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+  ga('create', 'UA-1656750-34', 'auto');
+  ga('require', 'linkid', 'linkid.js');
+  ga('require', 'displayfeatures');
+  ga('send', 'pageview');
+
+</script>
+
+</body>
+</html>

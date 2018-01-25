@@ -1,0 +1,33 @@
+
+# 大鱼测试 活动验证 变更验证 登录验证 注册验证 身份验证
+# 身份验证验证码	SMS_13052466  验证码${code}，您正在进行${product}身份验证，打死不要告诉别人哦！
+# 短信测试	SMS_13052465  尊敬的${customer}，欢迎您使用阿里大鱼短信服务，阿里大鱼将为您提供便捷的通信服务！
+# 登录确认验证码	SMS_13052464  验证码${code}，您正在登录${product}，若非本人操作，请勿泄露。
+# 登录异常验证码	SMS_13052463  验证码${code}，验证码${code}，您正尝试异地登录${product}，若非本人操作，请勿泄露。
+# 用户注册验证码	SMS_13052462  验证码${code}，您正在注册成为${product}用户，感谢您的支持！
+# 活动确认验证码	SMS_13052461  验证码${code}，您正在参加${product}的${item}活动，请确认系本人申请。
+# 修改密码验证码	SMS_13052460  验证码${code}，您正在尝试修改${product}登录密码，请妥善保管账户信息。
+# 信息变更验证码	SMS_13052459  验证码${code}，您正在尝试变更${product}重要信息，请妥善保管账户信息。
+
+defaults: &defaults
+  alidayu:
+    app_key: '0000000'
+    app_secret: '0000000'
+    post_url: 'http://gw.api.taobao.com/router/rest'
+    product: "IGMRC"
+    sms_templates:
+      - name: "user_auth"
+        sms_free_sign_name: "身份验证" # 短信签名
+        sms_template_code: "SMS_13052466" # 短信模板
+      - name: "sign_up"
+        sms_free_sign_name: "注册验证" # 短信签名
+        sms_template_code: "SMS_13052462" # 短信模板
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults

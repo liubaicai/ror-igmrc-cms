@@ -1,0 +1,17 @@
+<div class="site-nav">
+  <a href="/index.html">首页</a>
+  <!--<span>/</span>-->
+  <!--<a href="/report.html">举报中心</a>-->
+  <% get_all_links.each do |link| %>
+      <span>/</span>
+      <a href="<%= link.url %>"><%= link.title %></a>
+  <% end %>
+  <!--<span>/</span>-->
+  <!--<a href="/report.html">举报中心</a>-->
+  <!--<span>/</span>-->
+  <!--<a href="/news.html">安全资讯</a>-->
+  <!--<span>/</span>-->
+  <!--<a href="/case.html">真实案例</a>-->
+  <!--<span>/</span>-->
+  <!--<a href="/about.html">关于</a>-->
+</div>

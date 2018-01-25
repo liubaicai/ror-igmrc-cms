@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
+  <link href="//cdn.bootcss.com/summernote/0.6.16/summernote.css" rel="stylesheet">
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+  <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
+  <script type="text/javascript" src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script src="//cdn.bootcss.com/jquery-mockjax/1.6.2/jquery.mockjax.min.js"></script>
+  <script src="//cdn.bootcss.com/summernote/0.6.16/summernote.js"></script>
+  <script src="/layer/layer.js"></script>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex">
+  <title>IGMRC</title>
+
+
+</head>
+<body>
+<div id="page-wrapper" style="margin-left: 12px; margin-right: 12px;">
+  <div class="row">
+    <div class="col-lg-12">
+      <h1 class="page-header">站点菜单管理</h1>
+    </div>
+    <!-- /.col-lg-12 -->
+  </div>
+  <!-- /.row -->
+  <div class="row">
+    <div class="col-lg-12">
+
+      <div class="row">
+        <div class="col-lg-12">
+          <%= form_tag('/admin/menu-item-edit', method: 'post', role: 'form', class:'menu-form') do |f| %>
+
+              <div class="form-group">
+                <label>菜单项名称</label>
+                <input name="form_id" class="hidden" placeholder="输入菜单项的名称" value="<%= @link.id %>">
+                <input name="form_title" class="form-control" placeholder="输入菜单项的名称" value="<%= @link.title %>">
+              </div>
+
+              <div class="form-group">
+                <label>菜单项类型</label>
+                <select id="kind_select" class="form-control" name="form_type">
+                  <option>固定链接</option>
+                  <option>站内页面</option>
+                  <option>文章分类</option>
+                </select>
+              </div>
+              <div class="form-group" id="item-link">
+                <label>超链接地址</label>
+                <input class="form-control" placeholder="若您选择了固定链接，填写此项" value="<%= @link.url %>"
+                       name="form_url"/>
+              </div>
+
+              <div class="form-group" id="item-page" style="display: none;">
+                <label>站内页面（若您选择了站内页面，则需要选择改项）</label>
+                <select class="form-control" name="form_in_type">
+                  <% @pages.each do |page| %>
+                      <option id="<%= page.id %>"><%= page.title %></option>
+                  <% end %>
+                </select>
+              </div>
+              <div class="form-group" id="item-article" style="display: none;">
+                <label>文章分类（若您选择了文章分类，则需要选择改项）</label>
+                <select class="form-control" name="form_article_type">
+                  <% @article_types.each do |type| %>
+                      <option id="<%= type.id %>"><%= type.title %></option>
+                  <% end %>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>菜单项排序</label>
+                <input class="form-control" placeholder="数字越小越靠前，越大越靠后" value="<%= @link.sort %>"
+                       name="form_sort"/>
+              </div>
+
+              <button id="saveButton" class="btn btn-default">保存菜单项</button>
+          <% end %>
+        </div>
+        <script>
+          $(document).ready(function(){
+            $('#kind_select').change(function(){
+
+              var p1=$(this).children('option:selected').val();//这就是selected的值
+              if(p1=="固定链接")
+              {
+                $("#item-link").show();
+                $("#item-article").hide();
+                $("#item-page").hide();
+              }
+              else if(p1=="站内页面")
+              {
+                $("#item-link").hide();
+                $("#item-article").hide();
+                $("#item-page").show();
+              }
+              else
+              {
+                $("#item-link").hide();
+                $("#item-article").show();
+                $("#item-page").hide();
+              }
+            })
+          })
+        </script>
+
+        <!-- /.col-lg-6 (nested) -->
+
+      </div>
+      <!-- /.panel-body -->
+    </div>
+    <!-- /.panel -->
+  </div>
+  <!-- /.col-lg-12 -->
+</div>
+
+</div>
+</body>
+</html>

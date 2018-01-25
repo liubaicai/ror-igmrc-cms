@@ -1,0 +1,537 @@
+<body style="background-color: #f4f4f4;">
+
+<%= render :partial => 'layouts/notice' %>
+
+<header class="site-header jumbotron">
+
+  <%= render :partial => 'layouts/sitenav' %>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12"><h1>举报中心</h1>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="content-wrap" style="margin-top: 20px;">
+  <div class="container">
+
+    <div class="row">
+      <div class="col-md-9">
+
+        <%= form_tag('/report', method: 'post', id: 'submit-form') do %>
+
+            <div class="list-group packages">
+
+              <a class="package list-group-item" style="background-color: white;">
+                <div class="row">
+                  <div class="col-md-12">
+                    <h3 class="package-name"><span>举报中心</span><span
+                    style="margin-left: 12px;color: #e1e1e8;">reporting center</span></h3>
+                  </div>
+
+                </div>
+
+                <div id="ajax-error"></div>
+              </a>
+
+              <a class="package list-group-item" style="background-color: white;">
+                <div class="row">
+                  <div class="col-md-2">
+                    <h4 class="package-name">网站地址：</h4>
+                  </div>
+                  <div class="col-md-7">
+                    <input type="text" id="form-websiteUrl"  name="form-url" class="form-control search"
+                           placeholder="输入要举报的网站地址:（必须以http或https开头）">
+                  </div>
+                  <div class="col-md-3">
+                    <h5 class="package-name" style="color: red;" id="tips1"></h5>
+                  </div>
+                </div>
+              </a>
+
+              <a class="package list-group-item" style="background-color: white;">
+                <div class="row">
+                  <div class="col-md-2">
+                    <h4 class="package-name">网站名称：</h4>
+                  </div>
+                  <div class="col-md-7">
+                    <input type="text" id="form-websitename" name="form-title" class="form-control search"
+                           placeholder="输入网站品牌">
+                  </div>
+                  <div class="col-md-3">
+                    <h5 class="package-name" style="color: red;" id="tips2"></h5>
+                  </div>
+                </div>
+              </a>
+
+              <a class="package list-group-item" style="background-color: white;">
+                <div class="row">
+                  <div class="col-md-2">
+                    <h4 class="package-name">举报原因：</h4>
+                  </div>
+                  <div class="col-md-7">
+                    <input type="text" id="form-shortreason" name="form-short-reason" class="form-control search"
+                           placeholder="输入举报原因,如:黑客户存款、假冒网站、传销网站、诈骗网站、博彩网站等">
+                  </div>
+                  <div class="col-md-3">
+                    <h5 class="package-name" style="color: red;" id="tips3"></h5>
+                  </div>
+                </div>
+              </a>
+
+              <a class="package list-group-item" style="background-color: white;">
+                <div class="row">
+                  <div class="col-md-2">
+                    <h4 class="package-name">举报类型：</h4>
+                  </div>
+                  <input type="text" name="form-type" id="form-type" class="hide" value="1">
+                  <div class="col-md-9">
+                    <div class="btn-group" data-toggle="buttons">
+                      <label class="btn btn-default">
+                        <input type="radio" name="option-type" id="2"> 传销
+                      </label>
+                      <label class="btn btn-default">
+                        <input type="radio" name="option-type" id="3"> 赌博
+                      </label>
+                      <label class="btn btn-default">
+                        <input type="radio" name="option-type" id="4"> 诈骗
+                      </label>
+                      <label class="btn btn-default">
+                        <input type="radio" name="option-type" id="1"> 其他
+                      </label>
+                    </div>
+
+                  </div>
+                </div>
+              </a>
+
+              <a class="package list-group-item" style="background-color: white;">
+                <div class="row">
+                  <div class="col-md-2">
+                    <h4 class="package-name">详细信息：</h4>
+                  </div>
+                  <div class="col-md-7">
+                    <input type="text" name="form-reason" id="form-reason" class="hide">
+                    <textarea form="form-reason" id="textarea-reason" class="form-control search"
+                                          placeholder="输入对该网站的详细描述，如无法提供请上传网站截图或图片" style="height: 200px;
+                                    resize: none;"></textarea>
+                  </div>
+                </div>
+              </a>
+
+              <a class="package list-group-item" style="background-color: white;">
+                <div class="row">
+                  <div class="col-md-2">
+                    <h4 class="package-name">上传截图：</h4>
+
+                    <input class="hidden" id="form_images" name="form_images" value="">
+
+                    <input id="avatar_file" type="file" style="display:none" onchange="handleFiles(this.files)" accept="image/*">
+
+                  </div>
+
+                  <div class="col-md-7">
+
+                    <div class="form-group" id="site-snapshots">
+                    </div>
+                    <div class="form-group">
+                      <button onclick="$('input[id=avatar_file]').click();" style="margin-top: 12px;" type="button" class="btn btn-default">上传新截图</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="shot-div-progress" class="progress hide">
+                  <div class="progress-bar progress-bar-striped active"
+                       role="progressbar" id="shot-progress" aria-valuenow="0" aria-valuemin="0"
+                       aria-valuemax="100" style="width: 45%">
+                  </div>
+                </div>
+              </a>
+
+              <a class="package list-group-item" style="background-color: white;">
+                <div class="row">
+                  <div class="col-md-2">
+                    <h4 class="package-name">备注：</h4>
+                  </div>
+                  <div class="col-md-7">
+                    <input type="text" id="form-note" name="form-note" class="form-control search"
+                           placeholder="备注信息">
+                  </div>
+                </div>
+              </a>
+
+              <a class="package list-group-item" style="background-color: white;">
+                <div class="row">
+                  <div class="col-md-2">
+                    <h4 class="package-name">Email：</h4>
+                  </div>
+                  <div class="col-md-7">
+                    <input type="text" id="form-email" name="form-email" class="form-control search"
+                           placeholder="输入您的电子邮箱地址">
+                  </div>
+                  <div class="col-md-3">
+                    <h5 class="package-name" style="color: red;" id="tips4"></h5>
+                  </div>
+                </div>
+              </a>
+
+              <a class="package list-group-item" style="background-color: white;">
+                <div class="row">
+                  <div class="col-md-2">
+                    <h4 class="package-name">手机：</h4>
+                  </div>
+                  <div class="col-md-7">
+                    <input type="text" name="form-phone" readonly="readonly" class="form-control search"
+                           placeholder="输入您的手机号" value="<%= @current_user.phone %>">
+                  </div>
+                  <div class="col-md-3">
+
+                  </div>
+                </div>
+              </a>
+
+              <a class="package list-group-item" style="background-color: white;">
+                <div class="row">
+                  <div class="col-md-9">
+                    <!--<input onclick="submit_form();" value="举报该网站" type="button"
+                    class="btn btn-danger btn-lg" style="border-radius: 2px;"></input>-->
+                    <button onclick="submit_form();" id="submitButton" class="btn btn-danger btn-lg"
+                            disabled="disabled" style="border-radius: 2px;">
+                      举报该网站
+                    </button>
+                  </div>
+                </div>
+              </a>
+
+            </div>
+
+            <script>
+              $(document).ready(function () {
+                //setButtonEnable();
+                $("#form-email").on('input', function (e) {
+                  checkemail();
+                  setButtonEnable();
+                });
+                $("#form-websiteUrl").on('input', function (e) {
+                  checkUrl();
+                  setButtonEnable();
+                });
+                $("#form-shortreason").on('input', function (e) {
+                  checkReason();
+                  setButtonEnable();
+                });
+                $("#form-websitename").on('input', function (e) {
+                  checkName();
+                  setButtonEnable();
+                });
+              });
+
+              function checkempty(formnumber) {
+                if (formnumber == 1) {
+                  if ($("#form-websiteUrl").val().length == 0) {
+                    $("#tips1").html("网址不能为空");
+                    $("#tips1").css("color", "red");
+                    return false;
+                  }
+
+                  else return true;
+                }
+                if (formnumber == 4) {
+                  if ($("#form-email").val().length == 0) {
+                    $("#tips4").html("Email不能为空");
+                    $("#tips4").css("color", "red");
+                    return false;
+                  }
+
+                  else return true;
+                }
+                if (formnumber == 2) //名称
+                {
+                  if ($("#form-websitename").val().length == 0) {
+                    $("#tips2").html("网站名称不能为空");
+                    $("#tips2").css("color", "red");
+                    return false;
+                  }
+
+                  else
+                  {
+                    return true;
+                  }
+                }
+
+                if (formnumber == 3) //原因
+                {
+                  if ($("#form-shortreason").val().length == 0) {
+                    $("#tips3").html("举报原因不能为空");
+                    $("#tips3").css("color", "red");
+                    return false;
+                  }
+
+                  else return true;
+                }
+
+              }
+              function checkName() {
+                if (checkempty(2)) {
+                  $("#tips2").html("√");
+                  $("#tips2").css("color", "green");
+                  return true;
+                }
+                else return false;
+              }
+              function checkReason() {
+                if (checkempty(3)) {
+                  $("#tips3").html("√");
+                  $("#tips3").css("color", "green");
+                  return true;
+                }
+                else return false;
+              }
+              function checkUrl() {
+                if (checkempty(1)) {
+                  var re = new RegExp();
+                  re.compile("^[A-Za-z]+://[A-Za-z0-9-_]+\\.[A-Za-z0-9-_%&\?\/.=]+$");
+                  if (re.test($("#form-websiteUrl").val())) {
+                    $("#tips1").html("√");
+                    $("#tips1").css("color", "green");
+                    return true;
+                  } else {
+                    $("#tips1").html("不是合法的网址");
+                    $("#tips1").css("color", "red");
+                    return false;
+                  }
+
+                }
+
+              }
+              function checkemail() {
+                if (checkempty(4)) {
+                  var re = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/
+                  if (re.test($("#form-email").val())) {
+                    $("#tips4").html("√");
+                    $("#tips4").css("color", "green");
+                    return true;
+                  } else {
+                    $("#tips4").html("不是合法的Email地址");
+                    $("#tips4").css("color", "red");
+                    return false;
+                  }
+
+                }
+              }
+              function setButtonEnable() {
+                if(checkemail()&&checkName()&&checkReason()&&checkUrl())
+                {
+                  $("#submitButton").removeAttr("disabled");
+                }
+                else
+                {
+                  $("#submitButton").attr("disabled","disabled");
+                }
+
+              }
+            </script>
+
+      <% end %>
+
+      </div>
+
+
+      <div class="col-md-3">
+        <div class="list-group packages">
+          <a class="package list-group-item" style="background-color: white;">
+            <div class="row">
+              <div class="col-md-12">
+                <h4 class="package-name"><i class="fa fa-circle"></i><span style="margin-left: 6px;">最新风险网站</span>
+                </h4>
+              </div>
+
+            </div>
+          </a>
+
+          <% get_new_sites.each do |site| %>
+
+              <a class="package list-group-item" href="/sites/<%= site.id %>.html">
+                <div class="row">
+                  <div class="col-md-12">
+                    <h4 class="package-name"><i class="fa fa-warning" style="color: red;"></i><span
+                    style="margin-left: 6px;"><%= site.title %></span></h4>
+                  </div>
+                  <div class="col-md-12">
+                    <p class="package-description">
+                      <%= site.url %></p>
+                  </div>
+                </div>
+              </a>
+
+          <% end %>
+
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</section>
+<footer id="footer" class="footer hidden-print" style="background-color: white">
+  <div class="mostused-packages text-center hidden-xs hidden-sm" style="background-color: white;border:none;">
+
+    <%= render :partial => 'layouts/contact_bottom' %>
+
+  </div>
+
+  <%= render :partial => 'layouts/copyright' %>
+
+</footer>
+<script>
+  var all_images = '';
+  $(document).ready(function () {
+    $("input[name='option-type'][id='1']").click();
+    $("input[name='option-type']").change(function(){
+      $("#form-type").val($("input[name='option-type']:checked").attr("id"));
+    });
+  });
+  function handleFiles(files)
+  {
+    if(files.length)
+    {
+      var file = files[0];
+      var maxsize = 2*1024*1024;
+      if(file.size > maxsize){
+        alert('上传的附件文件不能超过2M!')
+      }
+      else {
+        upload_image(file)
+      }
+    }
+  }
+  var process_count = 0;
+  function processInterval()
+  {
+    process_count = process_count+1;
+    $("#shot-progress").attr("style","width: "+process_count+"%");
+  }
+  function upload_image(file){
+    var data = new FormData();
+    data.append('fileup', file);
+    $("#shot-div-progress").removeClass('hide');
+    process_count=0;
+    var inter_id = setInterval("processInterval()",50);//1000为1秒钟
+    $("#shot-progress").attr("style","width: "+process_count+"%");
+    $.ajax({
+      url: '/func/upload_image',
+      method: 'POST',
+      data: data,
+      processData: false,
+      contentType: false,
+      headers: {
+        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+      },
+      success: function(result) {
+        if(result != 'false'){
+          $("#site-snapshots").append('<div style="margin-top: 10px;"><img style="max-width: 40%;"src="' + result + '"/><br/> <button style="margin-top: 12px;" onclick="deleteSiteImage(this,\'' + result + '\')" type="button" class="btn btn-default btn-xs">删除</button> </div>');
+          if(all_images) {
+            all_images = all_images + ',';
+          }
+          all_images=all_images+result;
+          $("#form_images").val(all_images);
+        }
+        else {
+          //$("#ajax-notice").html("<div class='alert alert-danger' role='alert'><strong>图片上传失败!</strong></div>");
+        }
+        clearInterval(inter_id);
+        $("#shot-div-progress").addClass('hide');
+      }
+    });
+  }
+  function submit_form(){
+    $("#form-reason").val($("#textarea-reason").val());
+//    var images = document.getElementsByName("shot-thumbnail");
+//    var images_data = '';
+//    for (var i=0;i<images.length;i++){
+//      if (images.item(i).src != ''){
+//        if (images_data==''){
+//          images_data = images.item(i).src;
+//        }
+//        else {
+//          images_data = images_data + "," + images.item(i).src;
+//        }
+//      }
+//    }
+//    $("#form-image").val(images_data);
+
+    var isready = true;
+
+    if($("#form-url").val()==''){
+      $("#form-url").addClass('input-error');
+      isready=false;
+    }
+
+    if($("#form-title").val()==''){
+      $("#form-title").addClass('input-error');
+      isready=false;
+    }
+
+    if($("#form-short-reason").val()==''){
+      $("#form-short-reason").addClass('input-error');
+      isready=false;
+    }
+
+    if($("#form-reason").val()==''){
+      $("#form-reason").addClass('input-error');
+      isready=false;
+    }
+
+    if($("#form-email").val()==''){
+      $("#form-email").addClass('input-error');
+      isready=false;
+    }
+
+    if(isready){
+
+      var str_data=$("#submit-form input").map(function(){
+        if($(this).attr("type") != 'radio' && ($(this).attr("name")+"") != 'undefined')
+          return encodeURI($(this).attr("name")+'='+$(this).val());
+      }).get().join("&");
+
+      $.ajax({
+        url: '/func/commit_site',
+        method: 'POST',
+        data: str_data,
+        processData: false,
+        contentType: 'application/x-www-form-urlencoded',
+        headers: {
+          'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(result) {
+          if(result == 'true'){
+
+            $("#ajax-error").html("<div class='alert alert-success' role='alert'><strong>举报成功!</strong> 感谢您的举报!</div>");
+            window.scrollTo(0,0);
+            setTimeout(window.location='/',3000);
+          }
+          else {
+            $("#ajax-error").html("<div class='alert alert-danger' role='alert'><strong>举报失败!</strong> "+result+"</div>");
+            window.scrollTo(0,0);
+          }
+        }
+      });
+    }
+    else {
+      $("#ajax-error").html("<div class='alert alert-danger' role='alert'><strong>举报失败!</strong> 信息不完整!</div>");
+      window.scrollTo(0,0);
+    }
+
+    //$("#submit-form").submit();
+  }
+
+  var all_images = '';
+  function deleteSiteImage(obj,image) {
+    all_images = all_images.replace(',' + image + ',', ',').replace(image + ',', '').replace(',' + image, '').replace(image, '');
+    $("#form_images").val(all_images);
+    obj.parentNode.parentNode.removeChild(obj.parentNode);
+  }
+</script>
+</body>

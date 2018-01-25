@@ -1,0 +1,276 @@
+
+<body style="background-color: #f4f4f4;">
+<div class="row">
+  <div class="col-xs-12 col-sm-12 col-md-12">
+    <div class="list-group packages" id="ajax_form">
+
+      <a class="package list-group-item" style="background-color: white;">
+        <div class="row">
+          <div class="col-md-12">
+            <h3 class="package-name"><span>会员信息</span><span
+            style="margin-left: 12px;color: #e1e1e8;">infomation</span></h3>
+            <div id="ajax-notice"></div>
+          </div>
+        </div>
+      </a>
+      <a class="package list-group-item" style="background-color: white;">
+        <div class="row">
+          <div class="col-xs-3 col-sm-3 col-md-3">
+            <h4 class="package-name">会员名：</h4>
+          </div>
+          <div class="col-xs-6 col-sm-6 col-md-6">
+            <p class="package-description"><%= @user.username %></p>
+          </div>
+        </div>
+      </a>
+      <a class="package list-group-item" style="background-color: white;">
+        <div class="row">
+          <div class="col-xs-3 col-sm-3 col-md-3">
+            <h4 class="package-name">手机：</h4>
+          </div>
+          <div class="col-xs-6 col-sm-6 col-md-6">
+            <p class="package-description"><%= @user.phone %></p>
+          </div>
+        </div>
+      </a>
+      <a class="package list-group-item" style="background-color: white;">
+        <div class="row">
+          <div class="col-xs-3 col-sm-3 col-md-3">
+            <h4 class="package-name">头像：</h4>
+          </div>
+          <div class="col-xs-6 col-sm-6 col-md-6">
+            <input type="text" class="hide" id="form-avatar" name="form-avatar" value="<%= @user.avatar %>">
+            <input id="avatar_file" type="file" style="display:none" onchange="handleFiles(this.files)" accept="image/*">
+            <button onclick="$('input[id=avatar_file]').click();" class="btn-green btn-green-default" style="margin-top: -10px;">上传头像</button>
+          </div>
+        </div>
+      </a>
+      <a class="package list-group-item" style="background-color: white;">
+        <div class="row">
+          <div class="col-xs-3 col-sm-3 col-md-3">
+            <h4 class="package-name">真实姓名：</h4>
+          </div>
+          <div class="col-xs-6 col-sm-6 col-md-6">
+            <input type="text" class="form-control search" name="form-nickname" id="form-name"
+                   placeholder="输入您的真实姓名" value="<%= @user.nickname %>">
+          </div>
+          <div class="col-xs-3 col-sm-3 col-md-3">
+            <h5 class="package-name" style="color: red;" id="tips1"></h5>
+          </div>
+        </div>
+      </a>
+
+      <a class="package list-group-item" style="background-color: white;">
+        <div class="row">
+          <div class="col-xs-3 col-sm-3 col-md-3">
+            <h4 class="package-name">性别：</h4>
+          </div>
+          <div class="col-xs-6 col-sm-6 col-md-6">
+            <div class="btn-group" data-toggle="buttons">
+              <label class="btn btn-default <% if @user.sex==0 %>active<% end %>">
+                <input type="radio" name="sex_options" value="0" <% if @user.sex==0 %>checked=""<% end %>> 保密 </input>
+              </label>
+              <label class="btn btn-default <% if @user.sex==1 %>active<% end %>">
+                <input type="radio" name="sex_options" value="1" <% if @user.sex==1 %>checked=""<% end %>> 男 </input>
+              </label>
+              <label class="btn btn-default <% if @user.sex==2 %>active<% end %>">
+                <input type="radio" name="sex_options" value="2" <% if @user.sex==2 %>checked=""<% end %>> 女 </input>
+              </label>
+            </div>
+
+          </div>
+        </div>
+      </a>
+
+      <a class="package list-group-item" style="background-color: white;">
+        <div class="row">
+          <div class="col-xs-3 col-sm-3 col-md-3">
+            <h4 class="package-name">Email：</h4>
+          </div>
+          <div class="col-xs-6 col-sm-6 col-md-6">
+            <input type="text" class="form-control search" name="form-email" id="form-email"
+                   placeholder="输入您的电子邮箱地址" value="<%= @user.email %>">
+          </div>
+          <div class="col-xs-3 col-sm-3 col-md-3">
+            <h5 class="package-name" style="color: red;" id="tips2"></h5>
+          </div>
+        </div>
+      </a>
+
+
+      <a class="package list-group-item" style="background-color: white;">
+        <div class="row">
+          <div class="col-xs-3 col-sm-3 col-md-3">
+            <h4 class="package-name">个人说明：</h4>
+          </div>
+          <div class="col-xs-9 col-sm-9 col-md-9">
+            <textarea class="form-control search"
+                      placeholder="输入您详细的个人说明" name="form-description"
+                      style="height: 200px;resize: none;"><%= @user.description %></textarea>
+          </div>
+        </div>
+      </a>
+      <a class="package list-group-item" style="background-color: white;">
+        <div class="row">
+          <div class="col-md-12" style="text-align: center;">
+            <button onclick="submit_form();" id="submitButton" disabled="disabled" class="btn btn-danger btn-lg" style="border-radius: 2px;">
+              保存信息更改
+            </button>
+          </div>
+        </div>
+      </a>
+      <script>
+        $(document).ready(function () {
+          $("#form-email").on('input', function (e) {
+            checkemail();
+            setButtonEnable();
+          });
+
+          $("#form-name").on('input', function (e) {
+            checkName();
+            setButtonEnable();
+          });
+        });
+
+        function checkempty(formnumber) {
+          if (formnumber == 2) {
+            if ($("#form-email").val().length == 0) {
+              $("#tips2").html("Email不能为空");
+              $("#tips2").css("color", "red");
+              return false;
+            }
+
+            else return true;
+          }
+          if (formnumber == 1) //名称
+          {
+            if ($("#form-name").val().length == 0) {
+              $("#tips1").html("真实姓名不能为空");
+              $("#tips1").css("color", "red");
+              return false;
+            }
+
+            else
+            {
+              return true;
+            }
+          }
+
+        }
+        function checkName() {
+          if (checkempty(1)) {
+            $("#tips1").html("√");
+            $("#tips1").css("color", "green");
+            return true;
+          }
+          else return false;
+        }
+
+        function checkemail() {
+          if (checkempty(2)) {
+            var re = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/
+            if (re.test($("#form-email").val())) {
+              $("#tips2").html("√");
+              $("#tips2").css("color", "green");
+              return true;
+            } else {
+              $("#tips2").html("不是合法的Email地址");
+              $("#tips2").css("color", "red");
+              return false;
+            }
+
+          }
+        }
+        function setButtonEnable() {
+          if(checkemail()&&checkName())
+          {
+            $("#submitButton").removeAttr("disabled");
+          }
+          else
+          {
+            $("#submitButton").attr("disabled","disabled");
+          }
+
+        }
+      </script>
+    </div>
+  </div>
+</div>
+<script>
+  $(document).ready(function () {
+    $(window.parent.document).find("#iframe").load(function () {
+      var main = $(window.parent.document).find("#iframe");
+      var thisheight = $(document).height() + 30;
+      main.height(thisheight);
+    });
+  });
+  function handleFiles(files)
+  {
+    if(files.length)
+    {
+      var file = files[0];
+      var maxsize = 2*1024*1024;
+      if(file.size > maxsize){
+        alert('上传的附件文件不能超过2M!')
+      }
+      else {
+        upload_avatar(file)
+      }
+    }
+  }
+  function upload_avatar(file){
+    var data = new FormData();
+    data.append('fileup', file);
+    $.ajax({
+      url: '/func/upload_avatar',
+      method: 'POST',
+      data: data,
+      processData: false,
+      contentType: false,
+      headers: {
+        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+      },
+      success: function(result) {
+        if(result != 'false'){
+          var avatar = parent.window.document.getElementById('user_avatar');
+          avatar.src = result
+          $("#form-avatar").val(result)
+        }
+        else {
+          $("#ajax-notice").html("<div class='alert alert-danger' role='alert'><strong>头像修改失败!</strong></div>");
+        }
+      }
+    });
+  }
+  function submit_form(){
+    var str_data=$("#ajax_form input").map(function(){
+      if($(this).attr("type") != 'radio')
+        return encodeURI($(this).attr("name")+'='+$(this).val());
+    }).get().join("&");
+    var str_data2=$("#ajax_form textarea").map(function(){
+      return encodeURI($(this).attr("name")+'='+$(this).val());
+    }).get().join("&");
+    var str_data3 = 'form-sex' +'='+$("input[name='sex_options']:checked").val()
+    var post_data = str_data+"&"+str_data2+"&"+str_data3
+    $.ajax({
+      url: '/func/update_user',
+      method: 'POST',
+      data: post_data,
+      processData: false,
+      contentType: 'application/x-www-form-urlencoded',
+      headers: {
+        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+      },
+      success: function(result) {
+        if(result == 'true'){
+          parent.scrollTo(0,0);
+          $("#ajax-notice").html("<div class='alert alert-success' role='alert'><strong>修改成功!</strong> 您的个人信息已经更新</div>")
+        }
+        else {
+          $("#ajax-notice").html("<div class='alert alert-danger' role='alert'><strong>修改失败!</strong></div>");
+        }
+      }
+    });
+  }
+</script>
+</body>

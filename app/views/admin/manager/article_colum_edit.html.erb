@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
+  <link href="//cdn.bootcss.com/summernote/0.6.16/summernote.css" rel="stylesheet">
+  <script src="//cdn.bootcss.com/jquery-mockjax/1.6.2/jquery.mockjax.min.js"></script>
+  <script src="//cdn.bootcss.com/summernote/0.6.16/summernote.js"></script>
+  <script src="/layer/layer.js"></script>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex">
+  <title>IGMRC</title>
+
+
+</head>
+<body>
+<div id="page-wrapper" style="margin-left: 12px; margin-right: 12px;">
+  <div class="row">
+    <div class="col-lg-12">
+      <h1 class="page-header">分类信息编辑</h1>
+    </div>
+    <!-- /.col-lg-12 -->
+  </div>
+  <!-- /.row -->
+  <div class="row">
+    <div class="col-lg-12">
+
+      <div class="row">
+        <div class="col-lg-12">
+          <%= form_tag('/admin/article-colum-edit', method: 'post', role: 'form') do |f| %>
+
+            <div class="form-group">
+              <label>分类编号</label>
+              <input class="form-control" readonly="readonly" name="form_id" value="<%= @type.id %>">
+            </div>
+            <div class="form-group">
+              <label>分类名称</label>
+              <input class="form-control" name="form_title" value="<%= @type.title %>">
+            </div>
+              <div class="form-group">
+                <label>分类别名</label>
+                <input class="form-control" name="form_alias" value="<%= @type.alias_url %>">
+              </div>
+
+            <button  id="saveButton" class="btn btn-default">保存更改</button>
+
+          <% end %>
+        </div>
+
+        <!-- /.col-lg-6 (nested) -->
+
+      </div>
+      <!-- /.panel-body -->
+    </div>
+    <!-- /.panel -->
+  </div>
+  <!-- /.col-lg-12 -->
+</div>
+
+</div>
+
+
+</body>
+</html>

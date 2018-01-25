@@ -1,0 +1,56 @@
+<body style="background-color: #f4f4f4;">
+<div class="row">
+  <div class="col-xs-12 col-sm-12 col-md-12">
+    <div class="panel panel-default">
+      <!-- Default panel contents -->
+      <div class="panel-heading">我的站内信</div>
+
+      <!-- Table -->
+      <table class="table">
+        <thead>
+        <tr>
+          <th style="width:60%">内容</th>
+          <th>发布时间</th>
+          <th>状态</th>
+          <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+
+
+        <% @messages.each do |message| %>
+            <tr>
+              <td><%= link_to message.content.gsub(/<\/?.*?>/,''), message %></td>
+              <td><%= time_tostring2(message.created_at.localtime) %></td>
+              <% if message.isread %>
+                  <td>已读</td>
+              <% else %>
+                  <td style="color: red;">未读</td>
+              <% end%>
+              <td><%= link_to '删除', message, :method => :delete, data: { confirm: '确定删除吗?' } %></td>
+            </tr>
+        <% end %>
+
+        </tbody>
+      </table>
+
+
+    </div>
+
+    <nav>
+      <div class="row pagination" style="margin-top: 20px;">
+        <%=will_paginate @messages , renderer: BootstrapPagination::Rails%>
+      </div>
+    </nav>
+  </div>
+</div>
+<script>
+  $(document).ready(function () {
+    $(window.parent.document).find("#iframe").load(function () {
+      var main = $(window.parent.document).find("#iframe");
+      var thisheight = $(document).height() + 30;
+      main.height(thisheight);
+    });
+  });
+</script>
+</body>

@@ -1,0 +1,37 @@
+<ul class="list-inline">
+  <li>
+    <a style="border-bottom: dotted 0px #777" href="<%= Settings.get('site','weibo') %>" title="微博" target="_blank">
+      <img src="/img/weibo.svg" alt="微博">
+    </a>
+  </li>
+  <li id="weixin_img" style="position:relative;">
+    <a href="#" title="微信" target="_blank">
+      <img src="/img/wechat.svg" alt="微信">
+    </a>
+    <div id="weixin_code" style="z-index:100;display:none;height: 250px;width: 250px;position: absolute;background-color: red;top: -250px;">
+      <img style="height:250px;width:250px;" src="<%= Settings.get('site','weixin') %>" alt="微信">
+    </div>
+  </li>
+  <li>
+    <a style="border-bottom: dotted 0px #777" href="tencent://message/?uin=<%= Settings.get('site','qq') %>&Site=QQ交谈&Menu=yes" title="QQ" target="_blank">
+      <img src="/img/qq.svg" alt="QQ">
+    </a>
+  </li>
+  <li>
+    <a style="border-bottom: dotted 0px #777" href="mailto://<%= Settings.get('site','email') %>" title="邮箱" target="_blank">
+      <img src="/img/mail.svg" alt="邮箱">
+    </a>
+  </li>
+</ul>
+<script>
+  $(document).ready(function () {
+    $('#weixin_img').mouseover(function(){
+
+      $('#weixin_code').css('display','block');//可以自己修改速度
+    });
+    $('#weixin_img').mouseleave(function(){
+
+      $('#weixin_code').css('display','none');//可以自己修改速度
+    });
+  });
+</script>

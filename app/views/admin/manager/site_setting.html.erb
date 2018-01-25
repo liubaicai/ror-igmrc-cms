@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
+  <link href="//cdn.bootcss.com/summernote/0.6.16/summernote.css" rel="stylesheet">
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+  <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
+  <script type="text/javascript" src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script src="//cdn.bootcss.com/jquery-mockjax/1.6.2/jquery.mockjax.min.js"></script>
+  <script src="//cdn.bootcss.com/summernote/0.6.16/summernote.js"></script>
+  <script src="/layer/layer.js"></script>
+  <meta charset="utf-8">
+  <!--
+  Created using JS Bin
+  http://jsbin.com
+
+  Copyright (c) 2016 by mozillazg (http://jsbin.com/taxire/6/edit)
+
+  Released under the MIT license: http://jsbin.mit-license.org
+  -->
+  <meta name="robots" content="noindex">
+  <title>IGMRC</title>
+
+
+</head>
+<body>
+<div id="wrapper">
+  <div class="col-lg-12" style="margin-top: 12px;">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        站点信息编辑
+      </div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-lg-12">
+            <%= form_tag('/admin/site-setting', method: 'post', role: 'form') do |f| %>
+              <div class="form-group">
+                <label>站点标题</label>
+                <input class="form-control" placeholder="输入站点的标题"
+                       name="form_site_title"
+                       value="<%= Settings.get('site','title') %>">
+              </div>
+              <div class="form-group">
+                <label>版权信息</label>
+                <input class="form-control" placeholder="输入底部版权信息"
+                       name="form_site_copyright"
+                       value="<%= Settings.get('site','copyright') %>">
+              </div>
+
+
+              <div class="form-group">
+                <label>顶部通知标题</label>
+                <input class="form-control" placeholder="输入顶部通知标题"
+                       name="form_site_top_notice"
+                       value="<%= Settings.get('site','top_notice') %>">
+              </div>
+              <div class="form-group">
+                <label>顶部通知链接</label>
+                <input class="form-control" placeholder="输入顶部通知链接"
+                       name="form_site_top_notice_link"
+                       value="<%= Settings.get('site','top_notice_link') %>">
+              </div>
+              <div class="form-group">
+                <label>主页主标题</label>
+                <input class="form-control" placeholder="输入主页主标题"
+                       name="form_site_name"
+                       value="<%= Settings.get('site','name') %>">
+              </div>
+              <div class="form-group">
+                <label>主页副标题</label>
+                <input class="form-control" placeholder="输入主页副标题"
+                       name="form_site_s_name"
+                       value="<%= Settings.get('site','s_name') %>">
+              </div>
+              <div class="form-group">
+                <label>收录站点数量</label>
+                <input class="form-control" placeholder="输入主页上的收录站点的数量"
+                       name="form_site_site_count"
+                       value="<%= Settings.get('site','site_count') %>">
+              </div>
+              <div class="form-group">
+                <label>微博链接地址</label>
+                <input class="form-control" placeholder="微博地址"
+                       name="form_site_weibo"
+                       value="<%= Settings.get('site','weibo') %>">
+              </div>
+              <div class="form-group">
+                <label>微信二维码图片地址</label><br/>
+                <input class="form-control" placeholder="微信二维码图片地址"
+                       name="form_site_weixin" id="form_site_weixin"
+                       value="<%= Settings.get('site','weixin') %>">
+                <input id="site_weixin" type="file" style="display:none" onchange="handleFiles(this.files)" accept="image/*">
+
+                <% unless Settings.get('site','weixin').nil? || Settings.get('site','weixin')=='' %>
+                    <img id="image_weixin" src="<%= Settings.get('site','weixin') %>">
+                <% end %>
+                <div id="shot-div-progress" class="progress hide">
+                  <div class="progress-bar progress-bar-striped active"
+                       role="progressbar" id="shot-progress" aria-valuenow="0" aria-valuemin="0"
+                       aria-valuemax="100" style="width: 45%">
+                  </div>
+                </div>
+                <button onclick="$('input[id=site_weixin]').click();" style="margin-top: 12px;" type="button" class="btn btn-default">上传二维码图片</button>
+              </div>
+              <div class="form-group">
+                <label>QQ号</label>
+                <input class="form-control" placeholder="输入QQ号"
+                       name="form_site_qq"
+                       value="<%= Settings.get('site','qq') %>">
+              </div>
+              <div class="form-group">
+                <label>电子邮箱</label>
+                <input class="form-control" placeholder="输入电子邮箱"
+                       name="form_site_email"
+                       value="<%= Settings.get('site','email') %>">
+              </div>
+              <div class="form-group">
+                <label>底部左下角文字内容</label>
+                <textarea class="editor"
+                          name="form_site_bottom_left">
+                  <%= Settings.get('site','bottom_left') %>
+                </textarea>
+              </div>
+
+              <div class="form-group">
+                <label>底部中间文字内容</label>
+                <textarea class="editor"
+                          name="form_site_bottom_center">
+                  <%= Settings.get('site','bottom_center') %>
+                                </textarea>
+              </div>
+              <div class="form-group">
+                <label>底部右边文字内容</label>
+                <textarea class="editor"
+                          name="form_site_bottom_right">
+                  <%= Settings.get('site','bottom_right') %>
+                                </textarea>
+              </div>
+              <button id="saveButton" class="btn btn-default">保存所做的更改</button>
+            <% end %>
+          </div>
+          <!-- /.col-lg-6 (nested) -->
+
+        </div>
+        <!-- /.row (nested) -->
+      </div>
+      <!-- /.panel-body -->
+    </div>
+    <!-- /.panel -->
+  </div>
+</div>
+<script>
+//  $(document).ready(function () {
+//    $("#saveButton").click(function () {
+//      layer.alert('保存信息成功!');
+//    });
+//  });
+function handleFiles(files)
+{
+  if(files.length)
+  {
+    var file = files[0];
+    var maxsize = 2*1024*1024;
+    if(file.size > maxsize){
+      alert('上传的附件文件不能超过2M!')
+    }
+    else {
+      upload_file(file)
+    }
+  }
+}
+var process_count = 0;
+var shot_count = 1;
+function processInterval()
+{
+  process_count = process_count+1;
+  $("#shot-progress").attr("style","width: "+process_count+"%");
+}
+function upload_file(file){
+  var data = new FormData();
+  data.append('fileup', file);
+  $("#shot-div-progress").removeClass('hide');
+  process_count=0;
+  var inter_id = setInterval("processInterval()",50);//1000为1秒钟
+  $("#shot-progress").attr("style","width: "+process_count+"%");
+  $.ajax({
+    url: '/func/upload_image',
+    method: 'POST',
+    data: data,
+    processData: false,
+    contentType: false,
+    headers: {
+      'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+    },
+    success: function(result) {
+      if(result != 'false'){
+        $("#form_site_weixin").val(result);
+        var avatar = document.getElementById('image_weixin');
+        avatar.src = result;
+      }
+      clearInterval(inter_id);
+      $("#shot-div-progress").addClass('hide');
+    }
+  });
+}
+</script>
+<script>
+  $(function () {
+
+    $('.editor').summernote({
+      height: "300px",
+      onImageUpload: function(files) {
+        var $editor = $(this);
+        var data = new FormData();
+        data.append('fileup', files[0]);
+        $.ajax({
+          url: '/func/upload_image',
+          method: 'POST',
+          data: data,
+          processData: false,
+          contentType: false,
+          headers: {
+            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+          },
+          success: function (data) {
+            var imgURL = data;
+            $editor.summernote('insertImage', imgURL);
+          }
+        });
+      }
+    });
+
+    //ajax emulation
+//    $.mockjax({
+//      url: '/upload',
+//      type: 'POST',
+//      status: 200,
+//      responseText: {
+//        url: "http://img.amiami.jp/images/product/main/152/MED-CD2-18780.jpg"
+//      }
+//    });
+  });
+</script>
+<script src="https://static.jsbin.com/js/render/edit.js?3.39.12"></script>
+
+<script>
+  (function (i, s, o, g, r, a, m) {
+    i['GoogleAnalyticsObject'] = r;
+    i[r] = i[r] || function () {
+          (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date();
+    a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0];
+    a.async = 1;
+    a.src = g;
+    m.parentNode.insertBefore(a, m)
+  })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+  ga('create', 'UA-1656750-34', 'auto');
+  ga('require', 'linkid', 'linkid.js');
+  ga('require', 'displayfeatures');
+  ga('send', 'pageview');
+
+</script>
+
+
+</body>
+</html>
