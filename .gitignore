@@ -21,8 +21,4 @@
 /tmp
 !/tmp/restart.txt
 
-Gemfile.lock
-
 aliyun_sdk.log
-
-/config/app_config.yml

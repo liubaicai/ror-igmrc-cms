@@ -1,0 +1,29 @@
+---
+admin:
+  email: 10086@qq.com
+  name: admin
+  password: "123456"
+  phone: "123"
+aliyun:
+  access_key_id:
+  access_key_secret:
+  endpoint: "https://oss-cn-hangzhou.aliyuncs.com"
+settings:
+  image_save_local: true
+site:
+  bottom_center:
+  bottom_left:
+  bottom_right:
+  copyright: "© 2013-2016 赣ICP备123号"
+  email: IGMRC
+  name: IGMRC
+  qq: IGMRC
+  s_name: 互联网反赌反传舆情举报中心
+  site_count: "10094"
+  title: IGMRC互联网反赌反传舆情举报中心
+  top_notice: "IGMRC已收录超过 10000个 诈骗及传销类型的网站！"
+  top_notice_link: "https://www.baidu.com/"
+  weibo: IGMRC
+  weixin: ""
+test:
+  test_count: 0
